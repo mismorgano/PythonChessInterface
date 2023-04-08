@@ -1,0 +1,15 @@
+[tool.poetry]
+name = "chessinterface"
+version = "0.1.0"
+description = "A GUI for chess"
+authors = ["mismorgano <mismorgano@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.10"
+pyglet = "^2.0.5"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

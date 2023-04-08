@@ -1,0 +1,12 @@
+
+# zip files
+./assets/JohnPablok Cburnett Chess Zip.zip
+./chess_engine/stockfish_15.1_win_x64_avx2.zip
+
+#code editors files
+.idea
+.vscode
+
+# python environment
+.venv
+
