@@ -164,14 +164,15 @@ class ChessBoard:
         
         pos = 0
         print(fen._board)
-        for rank in fen._board:
-            for file in rank:
+        for rank in range(8):
+            for file in range(8):
+                piece  = fen[rank][file]
 
-                if file is not None:
+                if piece is not None:
                     
                     
-                    img = self.img_pieces[file]
-                    i, j = 7 - pos//8, 7- pos %8
+                    img = self.img_pieces[piece]
+                    i, j = 7 - rank, 7- file
                     
                     x, y = self._x + size*j + size/2, self._y + size*i + size/2
                     print(i, j, x, y,file)

@@ -16,7 +16,7 @@ class Fen:
 
 
 	def __getitem__(self, position):
-		pass
+		return self._board[position]
 
 
 fen = Fen('rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1')
