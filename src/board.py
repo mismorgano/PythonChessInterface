@@ -1,5 +1,5 @@
 from ctypes import sizeof
-from pyglet import shapes
+from pyglet import math, shapes
 from chesspiece.piece import Piece, ChessPieceType
 from chesspiece.pawn import PawnPiece
 from pyglet.resource import image
@@ -8,6 +8,8 @@ from pyglet.image import AbstractImage
 from pyglet.sprite import Sprite
 import os
 import sys
+
+from fennotation import Fen
 
 path = "../assets/JohnPablokCburnettChessSet/PNGs/No shadow/128h"
 real_path = os.path.normpath(os.path.join(os.path.dirname(__file__), path))
@@ -154,32 +156,31 @@ class ChessBoard:
         self._pieces = []
 
 
-    def setup(self, fen:str):
+    def setup(self, fen: Fen):
         self.fen = fen
-        ranks = fen.split('/')
-        for r in ranks:
-            print(r)
-        print(ranks)
+        
         self.make_board()
         size = self._tile_size
         
         pos = 0
-        for rank in range(8):
-            for _, piece in enumerate(ranks[rank]):
-                
-                if not str.isdigit(piece):
+        print(fen._board)
+        for rank in fen._board:
+            for file in rank:
+
+                if file is not None:
                     
-                    img = self.img_pieces[piece]
+                    
+                    img = self.img_pieces[file]
                     i, j = 7 - pos//8, 7- pos %8
                     
                     x, y = self._x + size*j + size/2, self._y + size*i + size/2
-                    print(i, j, x, y,piece)
+                    print(i, j, x, y,file)
                     piece = pyglet.sprite.Sprite(img, x, y, batch=self._batch, group=self._group_foreground)
                     piece.scale = 0.5
                     self._pieces.append(piece)
                     pos += 1
                 else:
-                    pos += int(piece)
+                    pos += 1
             # match self.black_pieces[i].type:
             #     case ChessPieceType.PAWN:
             #         img = self.img_pieces['p']

@@ -2,7 +2,7 @@ import pyglet
 import platform
 import ctypes
 import pyglet.resource as resource
-
+from fennotation import Fen
 
 
 import os
@@ -63,7 +63,7 @@ background_color = pyglet.shapes.Rectangle(x=0, y=0, width=WIDTH, height=HEIGHT,
 
 
 chess_board = ChessBoard(0, 0, 80, batch)
-chess_board.setup('rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR')
+chess_board.setup(Fen('rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR'))
 @window.event
 def on_draw():
     window.clear()
