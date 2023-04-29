@@ -3,7 +3,7 @@ import platform
 import ctypes
 import pyglet.resource as resource
 from fennotation import Fen
-
+from pyglet.window import mouse
 
 import os
 
@@ -73,6 +73,27 @@ def on_draw():
 def on_resize(width, heigh):
     background_color.width = width
     background_color.height = heigh
+
+@window.event
+def on_mouse_press(x, y, button, modifiers):
+    
+    file, rank = x//TILE_SIZE, y //TILE_SIZE
+    chess_board._active_piece = (chess_board[rank][file], chess_board.fen[rank][file])
+
+    print(rank, file)
+    print(chess_board.fen[rank][file])
+
+@window.event
+def on_mouse_drag(x,y, dx, dy, buttons, modifiers):
+    if buttons & mouse.LEFT:
+        i, j = (x)//TILE_SIZE, (y)//TILE_SIZE
+        # print(x, y, dx, dy)
+        print(chess_board._active_piece[0], chess_board._active_piece[1])
+        active = chess_board._active_piece[0]
+        active.x = x
+        active.y = y
+
+
 
 if __name__ == '__main__':
     pyglet.app.run()

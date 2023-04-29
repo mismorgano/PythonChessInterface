@@ -13,6 +13,8 @@ class Fen:
 				else:
 					file += [None] * int(piece)
 			self._board.append(file)
+		self._board = list(reversed(self._board))
+		print(self._board)
 
 
 	def __getitem__(self, position):

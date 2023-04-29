@@ -154,6 +154,7 @@ class ChessBoard:
         self._tiles = [[shapes.Rectangle]*8 for i in range(8)]
         self._tile_size = tile_size
         self._pieces = []
+        self._active_piece = (None, None)
 
 
     def setup(self, fen: Fen):
@@ -165,23 +166,29 @@ class ChessBoard:
         pos = 0
         print(fen._board)
         for rank in range(8):
+            row = []    
             for file in range(8):
+                
                 piece  = fen[rank][file]
-
+                
                 if piece is not None:
                     
                     
                     img = self.img_pieces[piece]
-                    i, j = 7 - rank, 7- file
+                    i, j = rank, file
                     
                     x, y = self._x + size*j + size/2, self._y + size*i + size/2
-                    print(i, j, x, y,file)
+                    print(i, j, x, y,file, piece)
                     piece = pyglet.sprite.Sprite(img, x, y, batch=self._batch, group=self._group_foreground)
                     piece.scale = 0.5
-                    self._pieces.append(piece)
+                    row.append(piece)
                     pos += 1
                 else:
+                    row.append(None)    
                     pos += 1
+                
+            self._pieces.append(row)
+            print(row)
             # match self.black_pieces[i].type:
             #     case ChessPieceType.PAWN:
             #         img = self.img_pieces['p']
@@ -189,6 +196,7 @@ class ChessBoard:
             #         print(img.width)
             
         print(pos)
+        print(len(self._pieces))
             
     
     def make_board(self) -> None:
@@ -203,3 +211,6 @@ class ChessBoard:
                 tile = shapes.Rectangle(x, y, size, size, color, self._batch, self._group_background)
 
                 self._tiles[rank][file] = tile
+    
+    def __getitem__(self, index):
+        return self._pieces[index]
