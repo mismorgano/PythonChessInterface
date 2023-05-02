@@ -39,19 +39,23 @@ def on_draw():
 
 @window.event
 def on_mouse_press(x, y, button, modifiers):
-    file, rank = x // TILE_SIZE, y // TILE_SIZE
+    chess_board.deactivate(x, y)
 
-    chess_board._active_piece = (chess_board[rank][file], chess_board.fen[rank][file])
+@window.event
+def on_mouse_release(x, y, button, modifiers):
+    chess_board.activate(x, y)
 
 
 @window.event
 def on_mouse_drag(x, y, dx, dy, buttons, modifiers):
     if buttons & mouse.LEFT:
-        i, j = (x) // TILE_SIZE, (y) // TILE_SIZE
 
         active = chess_board._active_piece[0]
-        active.x = x
-        active.y = y
+        if active:
+            active.x = x 
+            active.y = y 
+        # chess_board[rank][file] = active
+        # chess_board.fen[rank][file] = chess_board._active_piece[1]
 
 
 if __name__ == "__main__":

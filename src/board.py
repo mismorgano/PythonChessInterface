@@ -68,10 +68,15 @@ class ChessBoard:
         self._batch = batch
         self._group_background = pyglet.graphics.Group(order=0)
         self._group_foreground = pyglet.graphics.Group(order=1)
+        self._group_active_piece = pyglet.graphics.Group(
+            order=1, parent=self._group_foreground
+        )
         self._tiles = [[shapes.Rectangle] * 8 for i in range(8)]
         self._tile_size = tile_size
         self._pieces = []
         self._active_piece = (None, None)
+        self._dark_color = (80, 50, 70)
+        self._light_color = (180, 170, 230)
 
     def setup(self, fen: Fen):
         self.fen = fen
@@ -113,9 +118,9 @@ class ChessBoard:
             for file in range(8):
                 x, y = self._x + size * file, self._y + size * rank
                 if (rank + file) % 2 == 0:
-                    color = (80, 50, 70)
+                    color = self._dark_color
                 else:
-                    color = (180, 170, 230)
+                    color = self._light_color
                 tile = shapes.Rectangle(
                     x, y, size, size, color, self._batch, self._group_background
                 )
@@ -124,3 +129,40 @@ class ChessBoard:
 
     def __getitem__(self, index):
         return self._pieces[index]
+
+    def deactivate(self, x, y):
+        TILE_SIZE = self._tile_size
+        file, rank = x // TILE_SIZE, y // TILE_SIZE
+        piece = self.fen[rank][file]
+        if piece is not None:
+            apiece = self.img_pieces[piece]
+            apiece = Sprite(apiece, batch=self._batch, group=self._group_active_piece)
+            apiece.scale = 0.5
+            apiece.x = x
+            apiece.y = y
+            self._active_piece = (apiece, self.fen[rank][file])
+            self[rank][file] = None
+            self.fen[rank][file] = None
+
+    def activate(self, x, y):
+        TILE_SIZE = self._tile_size
+        file, rank = x // TILE_SIZE, y // TILE_SIZE
+        active = self._active_piece
+        if active != (None, None):
+            img = self.img_pieces[active[1]]
+            piece = pyglet.sprite.Sprite(
+                img, x, y, batch=self._batch, group=self._group_foreground
+            )
+            piece.x = TILE_SIZE * file + TILE_SIZE / 2
+            piece.y = TILE_SIZE * rank + TILE_SIZE / 2
+            piece.scale = 0.5
+            self[rank][file] = piece  # should create another Sprite with foreground
+            self.fen[rank][file] = active[1]
+            self.change_color_tile(rank, file)
+            self._active_piece = None, None
+
+    def change_color_tile(self, rank, file):
+        active_tile = self._tiles[rank][file]
+            
+        r, g, b, _ = active_tile.color
+        active_tile.color = (r, g, b, 150)
