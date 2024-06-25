@@ -70,35 +70,21 @@ class BoardSquare(IntEnum):
     H1 = auto()
 
 
+@dataclass
 class BitBoard(int):
-
-    def get_bit(self, square: BoardSquare):
-        """Determines if BitBoard has a 1 at the given square."""
-        return self & (1 << square)
-
-    def set_bit(self, square: BoardSquare):
-        """Set BitBoard bit to 1 at given square"""
-        return BitBoard(self | (1 << square))
-
-    def pop_bit(self, square: BoardSquare):
-        """Set BitBoard bit to 0 at given square"""
-        return BitBoard(self ^ (1 << square) if self.get_bit(square) else 0)
+    pass
 
 
 @dataclass
 class PieceBitBoard:
     piece: str
-    bitboard: BitBoard = field(default_factory=BitBoard)
-
-    def __post_init__(self):
-        """Force BitBoard to be of type BitBoard."""
-        self.bitboard = BitBoard(self.bitboard)
+    bitboard: BitBoard = 0
 
     def __str__(self):
         # each index correspond to a square on the board from 0 to 63 which we use to determine if there is a piece
         # in the bitboard using the & operator, 1 when there is and 0 when there is not
         ranks = [
-            f"""{8 - rank}  {" ".join(f"{self.piece if self.bitboard.get_bit(rank * 8 + file) else 0}"
+            f"""{8 - rank}  {" ".join(f"{self.piece if self.get_bit(rank * 8 + file) else 0}"
                                       for file in range(8))}""" for rank in range(8)]
         ranks += ['']
         ranks += [f'   {" ".join("a b c d e f g h".split())}']
@@ -107,15 +93,21 @@ class PieceBitBoard:
         ranks += ['']
         return '\n'.join(ranks)
 
+    def get_bit(self, square: BoardSquare):
+        """Determines if BitBoard has a 1 at the given square."""
+        return self.bitboard & (1 << square)
+
     def set_bit(self, square: BoardSquare):
-        self.bitboard = self.bitboard.set_bit(square)
+        """Set BitBoard bit to 1 at given square"""
+        self.bitboard |= (1 << square)
 
     def pop_bit(self, square: BoardSquare):
-        self.bitboard = self.bitboard.pop_bit(square)
+        """Set BitBoard bit to 0 at given square"""
+        self.bitboard = self.bitboard ^ (1 << square) if self.get_bit(square) else 0
 
 
 def main():
-    piece = PieceBitBoard(piece='B')
+    piece = PieceBitBoard(piece='B', bitboard=10)
     print(piece)
     piece.set_bit(BoardSquare.C3)
     piece.set_bit(BoardSquare.E4)
